@@ -1,0 +1,6 @@
+# originals stay local; the deck embeds resized copies
+GTMC PHOTOS/
+# old claude.ai artifact copy (no longer updated)
+.publish/
+.DS_Store
+.playwright-mcp/
