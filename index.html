@@ -82,6 +82,14 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 #s-welcome .hdr{font-size:220px}
 #s-welcome .hdr .txt{line-height:.92;letter-spacing:-.05em}
 #s-welcome .hdr .txt .dot{color:var(--gold)}
+#s-welcome .bgvid,#s-welcome .bgtint{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#s-welcome .bgvid{object-fit:cover;opacity:0;transition:opacity 1.2s ease}
+#s-welcome .bgvid.ready{opacity:1}
+/* tint: dark enough that every line of text stays readable over bright headlights */
+#s-welcome .bgtint{background:linear-gradient(90deg,rgba(10,10,10,.86) 0%,rgba(10,10,10,.72) 55%,rgba(10,10,10,.6) 100%)}
+#s-welcome > :not(.bgvid):not(.bgtint):not(.vidcredit){position:relative}
+#s-welcome .vidcredit{position:absolute;right:96px;bottom:110px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);opacity:0;transition:opacity 1.2s ease}
+#s-welcome .bgvid.ready ~ .vidcredit{opacity:1}
 
 /* 1 title */
 #s-title{display:flex;flex-direction:column;justify-content:center}
@@ -246,10 +254,14 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 
   <!-- 0 · WELCOME -->
   <section class="slide" id="s-welcome" data-gear="N">
+    <!-- local-only background video (welcome-bg.mp4 is gitignored; on the public site this slide stays plain) -->
+    <video class="bgvid" src="welcome-bg.mp4" muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="bgtint" aria-hidden="true"></div>
     <div class="kicker">MC@GT · <b>General Meeting</b></div>
     <h1 class="hdr"><span class="txt">Welcome<span class="dot">.</span></span></h1>
     <div class="rule" style="width:100%"></div>
     <p class="lede reveal">Grab a seat. We'll get started in a minute.</p>
+    <div class="vidcredit">Video: NIGHT LOVE – City Takeover · Driven by Art, 826.Media, FlicksbyMako, ImKay</div>
   </section>
 
   <!-- 1 · TITLE -->
@@ -583,6 +595,13 @@ const GTMC_PHOTOS = ["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAg
     if (CLUB_PHOTOS.length > tiles.length) tiles.forEach((_, n) => schedule(n));
   };
   const hideGallery = () => { clearTimeout(galleryTimer); tileTimers.forEach(clearTimeout); flipGen++; due.clear(); working = false; tiles.forEach(t => t.classList.remove('fade-out')); endSlide.classList.remove('show-gallery'); };
+
+  /* welcome background video: fade in once it can play; if the file isn't there (public site), drop it */
+  const bgvid = document.querySelector('#s-welcome .bgvid');
+  if (bgvid) {
+    bgvid.addEventListener('playing', () => bgvid.classList.add('ready'));
+    bgvid.addEventListener('error', () => bgvid.remove());
+  }
 
   /* navigation */
   let cur = -1;

@@ -4,3 +4,8 @@ GTMC PHOTOS/
 .publish/
 .DS_Store
 .playwright-mcp/
+# background video for the Welcome slide stays local (too big for the repo)
+welcome-bg.mp4
+*.mp4
+*.mkv
+.vid/
